@@ -11,6 +11,15 @@ const mongoose = require('mongoose')
 //const db = mongoose.connection
 
 
+//MIDDLEWARES
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}))
+
+
 //ROUTES
 app.get('/', (req, res) => {
   res.send('We are on home')
@@ -18,18 +27,11 @@ app.get('/', (req, res) => {
 
 const postsRoute = require('./routes/posts')
 
-
-//MIDDLEWARES
+//ROUTES MIDDLEWARES
 app.use('/posts', (req, res, next) => {
   console.log('Middleware is working.')
   next()
 })
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true
-}))
 
 app.use('/posts', postsRoute)
 
