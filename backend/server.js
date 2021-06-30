@@ -1,9 +1,14 @@
 const express = require('express')
 const app = express()
 
-PORT = 3001
+const cors = require('cors')
 
-//MIDDLEWARES
+require('dotenv').config() //require('dotenv/config')
+const PORT = process.env.PORT
+const MONGO_CONNECTION = process.env.MONGO_CONNECTION
+
+const mongoose = require('mongoose')
+//const db = mongoose.connection
 
 
 //ROUTES
@@ -11,8 +16,28 @@ app.get('/', (req, res) => {
   res.send('We are on home')
 })
 
-app.get('/posts', (req, res) => {
-  res.send('We are on posts')
+const postsRoute = require('./routes/posts')
+
+
+//MIDDLEWARES
+app.use('/posts', (req, res, next) => {
+  console.log('Middleware is working.')
+  next()
+})
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}))
+
+app.use('/posts', postsRoute)
+
+
+//DATABASE CONNECTION
+mongoose.connect(`${MONGO_CONNECTION}`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
 
 
